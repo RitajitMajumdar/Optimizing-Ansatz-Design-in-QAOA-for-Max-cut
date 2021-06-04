@@ -1,0 +1,2 @@
+# Optimizing-Ansatz-Design-in-QAOA-for-Max-cut
+The repository contains the code to find the probability of error for the traditional QAOA ansatz, and the proposed Edge coloring and Depth First Search Based Ansatz. This research was done in collaboration with IBM India Research Lab. The collaborators are Ritajit Majumdar, Dhiraj Madan, Debasmita Bhoumik, Dhinakaran Vinayagamurthy, Shesha Raghunathan and Susmita Sur-Kolay. The corresponding paper can be found in arXiv:
