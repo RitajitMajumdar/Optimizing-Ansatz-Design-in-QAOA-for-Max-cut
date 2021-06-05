@@ -3,4 +3,4 @@ The repository contains the code to find the probability of error for the tradit
 
 Requirements: In order to run this code, one requires Python3 and Qiskit. The used Qiskit version is 0.17.4. However, it should work with other versions of Qiskit as well.
 
-This research was done in collaboration with IBM India Research Lab. The collaborators are Ritajit Majumdar, Dhiraj Madan, Debasmita Bhoumik, Dhinakaran Vinayagamurthy, Shesha Raghunathan and Susmita Sur-Kolay. The corresponding paper can be found in arXiv:
+This research is a collaboration between Indian Statistical Institute, and IBM India Research Lab. The collaborators are Ritajit Majumdar, Dhiraj Madan, Debasmita Bhoumik, Dhinakaran Vinayagamurthy, Shesha Raghunathan and Susmita Sur-Kolay. The corresponding paper can be found in arXiv:
