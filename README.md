@@ -5,4 +5,4 @@ This particular code uses the Manhattan Noise Model (noise_model_FakeManhattan.p
 
 Requirements: In order to run this code, one requires Python3 and Qiskit. The used Qiskit version is 0.17.4. However, it should work with other versions of Qiskit as well.
 
-This research is a collaboration between Indian Statistical Institute, and IBM India Research Lab. The collaborators are Ritajit Majumdar, Dhiraj Madan, Debasmita Bhoumik, Dhinakaran Vinayagamurthy, Shesha Raghunathan and Susmita Sur-Kolay. The corresponding paper can be found in arXiv:
+This research is a collaboration between Indian Statistical Institute, and IBM India Research Lab. The collaborators are Ritajit Majumdar, Dhiraj Madan, Debasmita Bhoumik, Dhinakaran Vinayagamurthy, Shesha Raghunathan and Susmita Sur-Kolay. The corresponding paper can be found in https://arxiv.org/abs/2106.02812
