@@ -23,7 +23,7 @@ class DFS(EdgeColoring):
     def __init__(self,
                 graph: Union[Graph, List],
                 gamma: float,
-                start_vertex: int,
+                start_vertex: Optional[int] = 0,
                 qc: Optional[QuantumCircuit] = None,
                 ):
         super().__init__(graph,gamma,qc)
