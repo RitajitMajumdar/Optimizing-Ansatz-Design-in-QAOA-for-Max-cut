@@ -7,6 +7,7 @@ or their published versions, if any.
 """
 
 from edge_coloring import EdgeColoring
+from circuit import Circuit
 
 import numpy as np
 import networkx as nx
@@ -65,31 +66,14 @@ class DFS(EdgeColoring):
             
             no_opt_order = super()._edge_col(no_opt_edges)
             
-            self.qc.h(range(len(self.graph.nodes)))
-            for edge in opt_edges:
-                self.qc.rz(self.gamma,edge[1])
-                self.qc.cx(edge[0],edge[1])
+            circ = Circuit(opt_edges,no_opt_order,self.gamma)
             
-            for color in list(no_opt_order.keys()):
-                for edge in no_opt_order[color]:
-                    self.qc.cx(edge[0],edge[1])
-                    self.qc.rz(self.gamma,edge[1])
-                    self.qc.cx(edge[0],edge[1])
+            if self.qc is None:
+                self.qc = circ.create_circuit(optimize=optimize,undo_gates=undo_gates)
+            else:
+                try:
+                    self.qc = self.qc.compose(circ.create_circuit(optimize=optimize,undo_gates=undo_gates))
+                except:
+                    raise ValueError("Could not compose the circuit with the provided circuit!")
             
-            if undo_gates:
-                self.qc.barrier()
-                for color in reversed(list(no_opt_order.keys())):
-                    for edge in no_opt_order[color]:
-                        self.qc.cx(edge[0],edge[1])
-                        self.qc.rz(-1*self.gamma,edge[1])
-                        self.qc.cx(edge[0],edge[1])
-                
-                for edge in reversed(opt_edges):
-                    self.qc.rz(-1*self.gamma,edge[1])
-                    self.qc.cx(edge[0],edge[1])
-                
-                self.qc.h(range(len(self.graph.nodes)))
-            
-            self.qc.measure_all()
-        
             return self.qc

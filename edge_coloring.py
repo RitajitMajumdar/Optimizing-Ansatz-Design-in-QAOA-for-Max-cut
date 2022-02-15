@@ -6,6 +6,7 @@ is used for any research publication, or pre-print, please cite arXiv:2106.02812
 or their published versions, if any.
 """
 
+from circuit import Circuit
 
 import numpy as np
 import networkx as nx
@@ -31,10 +32,7 @@ class EdgeColoring():
             self.graph = G
         
         self.gamma = gamma
-        if qc is None or qc.num_qubit != len(self.graph.nodes):
-            self.qc = QuantumCircuit(len(self.graph.nodes))
-        else:
-            self.qc = qc
+        self.qc = qc
     
     
     def _get_parallel_edges(self, col_dict: dict) -> dict:
@@ -101,57 +99,20 @@ class EdgeColoring():
         of the noise"""
         
         edge_color = self._edge_col()
+        first_color = list(edge_color.keys())[0]
+        opt_edges = edge_color[first_color]
         
-        if not optimize:
-            self.qc.h(range(len(self.graph.nodes)))
-            for col in list(edge_color.keys()):
-                for edge in edge_color[col]:
-                    self.qc.cx(edge[0],edge[1])
-                    self.qc.rz(self.gamma,edge[1])
-                    self.qc.cx(edge[0],edge[1])
-            
-            if undo_gates:
-                self.qc.barrier()
-                for col in reversed(list(edge_color.keys())):
-                    for edge in edge_color[col]:
-                        self.qc.cx(edge[0],edge[1])
-                        self.qc.rz(self.gamma,edge[1])
-                        self.qc.cx(edge[0],edge[1])
-                self.qc.h(range(len(self.graph.nodes)))
-            
-            self.qc.measure_all()
-            
+        del edge_color[first_color]
+        
+        circ = Circuit(opt_edges,edge_color,self.gamma)
+        
+        if self.qc is None:
+            self.qc = circ.create_circuit(optimize=optimize,undo_gates=undo_gates)
         else:
-            first_color = list(edge_color.keys())[0]
-            colors = list(edge_color.keys())[1:]
-            self.qc.h(range(len(self.graph.nodes)))
-            
-            for edge in edge_color[first_color]:
-                """The first set of edges will not need the 1st CNOT gate"""
-                self.qc.rz(self.gamma,edge[1])
-                self.qc.cx(edge[0],edge[1])
-            
-            for col in colors:
-                for edge in edge_color[col]:
-                    self.qc.cx(edge[0],edge[1])
-                    self.qc.rz(self.gamma,edge[1])
-                    self.qc.cx(edge[0],edge[1])
-        
-            # now we undo everything
-            if undo_gates:
-                self.qc.barrier()
-                for col in reversed(colors):
-                    for edge in edge_color[col]:
-                        self.qc.cx(edge[0],edge[1])
-                        self.qc.rz(-1*self.gamma,edge[1])
-                        self.qc.cx(edge[0],edge[1])
-                
-                for edge in edge_color[first_color]:
-                    self.qc.cx(edge[0],edge[1])
-                    self.qc.rz(-1*self.gamma,edge[1])
-            
-                self.qc.h(range(len(self.graph.nodes)))
-                
-            self.qc.measure_all()
+            try:
+                self.qc = self.qc.compose(circ.create_circuit(optimize=optimize,undo_gates=undo_gates))
+            except:
+                raise ValueError("Could not compose the circuit with the provided circuit!")
         
         return self.qc
+        
